@@ -105,8 +105,9 @@ async fn main(req: Request, _env: Env, _ctx: Context) -> Result<Response> {
                 if let Some(target_val) = target_val {
                     if cms_tag_attr.contains("link") {
                         _ = el.set_attribute("href", target_val);
+                    } else {
+                        el.set_inner_content(target_val, lol_html::html_content::ContentType::Text);
                     }
-                    el.set_inner_content(target_val, lol_html::html_content::ContentType::Text);
                 }
 
                 Ok(())
