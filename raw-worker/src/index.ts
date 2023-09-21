@@ -60,19 +60,7 @@ class CMSRewriter {
 	}
 }
 
-const sleep = async (time: number) => {
-	return new Promise((res, rej) => {
-		setTimeout(() => {
-			res({});
-		}, time)
-	})
-}
-
-
 const mockKVStoreRequest = async (): Promise<CMSObject> => {
-	// 10ms delay
-	await sleep(10)
-
 	return {
 		page_title: 'page_title',
 		main_header: 'main_header',
@@ -121,10 +109,10 @@ function MethodNotAllowed(request: Request) {
 
 export default {
 	async fetch(req: Request, env: any) { // Request that user made
-		const pre = performance.now();
 		if (req.method !== "GET") return MethodNotAllowed(req);
 
 		const url = new URL(req.url)
+
 		url.hostname = PROXY_LINK;
 
 		// Upstream response
@@ -133,9 +121,6 @@ export default {
 
 		const rewrite = new HTMLRewriter().on(`[${CMS_ATTRIBUTE}]`, new CMSRewriter(kvData)).transform(upstreamResponse);
 
-		const post = performance.now();
-		const timeTaken = String(post - pre);
-		rewrite.headers.set('Performance', timeTaken)
 		return rewrite;
 	},
 };
