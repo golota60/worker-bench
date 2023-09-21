@@ -70,7 +70,6 @@ impl Workerable for reqwest::Response {
 
 #[event(fetch)]
 async fn main(req: Request, _env: Env, _ctx: Context) -> Result<Response> {
-    println!("received request");
     if !matches!(req.method(), Method::Get) {
         return Response::error("Method Not Allowed", 405);
     }
@@ -116,7 +115,6 @@ async fn main(req: Request, _env: Env, _ctx: Context) -> Result<Response> {
         },
     )
     .expect("error while rewriting");
-    // let as_bytes: Vec<u8> = as_html_string.into();
 
     let rep = worker::Response::from_html(output).unwrap();
     let rep = rep.with_headers(headers.into());
